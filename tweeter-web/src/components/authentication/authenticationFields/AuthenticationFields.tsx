@@ -1,26 +1,16 @@
-import { useState } from "react";
 
 interface Props {
+  alias: string;
+  password: string;
+  setAlias: (alias: string) => void;
+  setPassword: (password: string) => void;
   onEnter: () => void;
 }
 
 const AuthenticationFields = (props: Props) => {
-  const [password, setPassword] = useState("");
-  const [firstName] = useState("");
-  const [lastName] = useState("");
-  const [alias, setAlias] = useState("");
-  const [imageUrl] = useState<string>("");
-  const [imageFileExtension] = useState<string>("");
 
   const checkSubmitButtonStatus = (): boolean => {
-    return (
-      !firstName ||
-      !lastName ||
-      !alias ||
-      !password ||
-      !imageUrl ||
-      !imageFileExtension
-    );
+    return !props.alias || !props.password;
   };
 
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
@@ -39,7 +29,7 @@ const AuthenticationFields = (props: Props) => {
           id="aliasInput"
           placeholder="name@example.com"
           onKeyDown={loginOnEnter}
-          onChange={(event) => setAlias(event.target.value)}
+          onChange={(event) => props.setAlias(event.target.value)}
         />
         <label htmlFor="aliasInput">Alias</label>
       </div>
@@ -50,7 +40,7 @@ const AuthenticationFields = (props: Props) => {
           id="passwordInput"
           placeholder="Password"
           onKeyDown={loginOnEnter}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={(event) => props.setPassword(event.target.value)}
         />
         <label htmlFor="passwordInput">Password</label>
       </div>

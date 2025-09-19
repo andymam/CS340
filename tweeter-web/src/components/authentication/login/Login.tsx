@@ -68,7 +68,13 @@ const Login = (props: Props) => {
 
   const inputFieldFactory = () => {
     return (
-      <AuthenticationFields onEnter={doLogin} />
+      <AuthenticationFields
+        alias={alias}
+        password={password}
+        setAlias={setAlias}
+        setPassword={setPassword}
+        onEnter={doLogin}
+      />
     );
   };
 
