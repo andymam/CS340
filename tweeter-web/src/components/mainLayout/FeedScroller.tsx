@@ -9,7 +9,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { ToastActionsContext } from "../toaster/ToastContexts";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastType } from "../toaster/Toast";
-import Post from "../statusItem/Post";
 import StatusItem from "../statusItem/StatusItem";
 
 export const PAGE_SIZE = 10;
@@ -84,34 +83,6 @@ const FeedScroller = () => {
   ): Promise<[Status[], boolean]> => {
     // TODO: Replace with the result of calling server
     return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
-  const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
-    event.preventDefault();
-
-    try {
-      const alias = extractAlias(event.target.toString());
-
-      const toUser = await getUser(authToken!, alias);
-
-      if (toUser) {
-        if (!toUser.equals(displayedUser!)) {
-          setDisplayedUser(toUser);
-          navigate(`/feed/${toUser.alias}`);
-        }
-      }
-    } catch (error) {
-      displayToast(
-        ToastType.Error,
-        `Failed to get user because of exception: ${error}`,
-        0
-      );
-    }
-  };
-
-  const extractAlias = (value: string): string => {
-    const index = value.indexOf("@");
-    return value.substring(index);
   };
 
   const getUser = async (
