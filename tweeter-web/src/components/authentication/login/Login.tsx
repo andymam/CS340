@@ -70,6 +70,7 @@ const Login = (props: Props) => {
         setAlias={setAlias}
         setPassword={setPassword}
         onEnter={doLogin}
+        buttonStatus={checkSubmitButtonStatus}
       />
     );
   };

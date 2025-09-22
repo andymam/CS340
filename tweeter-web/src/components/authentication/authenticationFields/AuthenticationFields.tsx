@@ -5,16 +5,13 @@ interface Props {
   setAlias: (alias: string) => void;
   setPassword: (password: string) => void;
   onEnter: () => void;
+  buttonStatus: () => boolean;
 }
 
 const AuthenticationFields = (props: Props) => {
 
-  const checkSubmitButtonStatus = (): boolean => {
-    return !props.alias || !props.password;
-  };
-
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
+    if (event.key == "Enter" && !props.buttonStatus()) {
       props.onEnter();
     }
   };

@@ -161,6 +161,7 @@ const Register = () => {
           setAlias={setAlias}
           setPassword={setPassword}
           onEnter={doRegister}
+          buttonStatus={checkSubmitButtonStatus}
         />
         <div className="form-floating mb-3">
           <input
