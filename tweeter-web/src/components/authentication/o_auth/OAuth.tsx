@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { ToastType } from "../../toaster/Toast";
 import { useMessageActions } from "../../toaster/MessageHooks";
 
 const OAuth = () => {
