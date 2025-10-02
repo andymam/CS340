@@ -20,6 +20,7 @@ import { StatusItemView } from "./presenter/StatusItemPresenter";
 import { FeedPresenter } from "./presenter/FeedPresenter";
 import { StoryPresenter } from "./presenter/StoryPresenter";
 import { LoginPresenter } from "./presenter/LoginPresenter";
+import { RegisterPresenter } from "./presenter/RegisterPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -124,8 +125,21 @@ const UnauthenticatedRoutes = () => {
           />
         }
       />
-      <Route path="/register" element={<Register />} />
-      <Route path="*" element={<Login originalUrl={location.pathname}  presenterFactory={(view) => new LoginPresenter(view)}/>} />
+      <Route
+        path="/register"
+        element={
+          <Register presenterFactory={(view) => new RegisterPresenter(view)} />
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <Login
+            originalUrl={location.pathname}
+            presenterFactory={(view) => new LoginPresenter(view)}
+          />
+        }
+      />
     </Routes>
   );
 };
