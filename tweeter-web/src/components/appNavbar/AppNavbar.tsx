@@ -2,10 +2,12 @@ import "./AppNavbar.css";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Image from "react-bootstrap/Image";
-import { AuthToken } from "tweeter-shared";
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoHooks";
-import { AppNavbarPresenter, AppNavBarView } from "../../presenter/AppNavBarPresenter";
+import {
+  AppNavbarPresenter,
+  AppNavBarView,
+} from "../../presenter/AppNavBarPresenter";
 import { useRef } from "react";
 
 const AppNavbar = () => {
@@ -16,22 +18,21 @@ const AppNavbar = () => {
   const { displayInfoMessage, displayErrorMessage, deleteMessage } =
     useMessageActions();
 
+  const view: AppNavBarView = {
+    displayInfoMessage,
+    displayErrorMessage,
+    deleteMessage,
+    clearUserInfo,
+    navigate,
+  };
 
-    const view: AppNavBarView = {
-      displayInfoMessage,
-      displayErrorMessage,
-      deleteMessage,
-      clearUserInfo,
-      navigate,
-    };
-
-    const presenterRef = useRef<AppNavbarPresenter | null>(null);
-    if (!presenterRef.current) {
-      presenterRef.current = new AppNavbarPresenter(view);
-    }
+  const presenterRef = useRef<AppNavbarPresenter | null>(null);
+  if (!presenterRef.current) {
+    presenterRef.current = new AppNavbarPresenter(view);
+  }
 
   const logOut = async () => {
-      await presenterRef.current!.logOut(authToken!);
+    await presenterRef.current!.logOut(authToken!);
   };
 
   return (
