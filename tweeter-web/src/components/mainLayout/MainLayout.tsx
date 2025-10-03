@@ -4,6 +4,10 @@ import AppNavbar from "../appNavbar/AppNavbar";
 import PostStatus from "../postStatus/PostStatus";
 import UserInfo from "../userInfo/UserInfoComponent";
 import { PostStatusPresenter } from "../../presenter/PostStatusPresenter";
+import {
+  UserInfoPresenter,
+  UserInfoView,
+} from "../../presenter/UserInfoPresenter";
 
 const MainLayout = () => {
   return (
@@ -14,10 +18,16 @@ const MainLayout = () => {
           <div className="col-4">
             <div className="row gy-4">
               <div className="p-3 mb-4 border rounded bg-light">
-                <UserInfo />
+                <UserInfo
+                  presenterFactory={(view: UserInfoView) =>
+                    new UserInfoPresenter(view)
+                  }
+                />
               </div>
               <div className="p-3 border mt-1 rounded bg-light">
-                <PostStatus presenterFactory={(view) => new PostStatusPresenter(view)}/>
+                <PostStatus
+                  presenterFactory={(view) => new PostStatusPresenter(view)}
+                />
               </div>
             </div>
           </div>
