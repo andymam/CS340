@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Status } from "tweeter-shared";
 import Post from "./Post";
 import { useUserNavigation } from "../userNavigation/useUserNavigationHook";
+import { UserNavigationHookPresenter } from "../../presenter/UserNavigationHookPresenter";
 
 interface Props {
   status: Status;
@@ -9,7 +10,7 @@ interface Props {
 }
 
 const StatusItem = (props: Props) => {
-  const navigateToUser = useUserNavigation(props.featurePath);
+  const navigateToUser = useUserNavigation(props.featurePath, (view) => new UserNavigationHookPresenter(view));
 
   return (
     <div className="col bg-light mx-0 px-0">
