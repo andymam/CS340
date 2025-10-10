@@ -1,7 +1,6 @@
 import { useMessageActions } from "../toaster/MessageHooks";
 import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoHooks";
 import { useNavigate } from "react-router-dom";
-import { UserService } from "../../model.service/UserService";
 import { NavigationHookView, UserNavigationHookPresenter } from "../../presenter/UserNavigationHookPresenter";
 import { useRef } from "react";
 
