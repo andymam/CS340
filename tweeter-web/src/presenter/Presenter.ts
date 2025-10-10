@@ -2,6 +2,11 @@ export interface View {
   displayErrorMessage: (message: string) => void;
 }
 
+export interface MessageView extends View {
+  displayInfoMessage: (message: string, duration: number) => string;
+  deleteMessage: (messageId: string) => void;
+}
+
 export abstract class Presenter<V extends View> {
   private _view: V;
 
@@ -13,7 +18,11 @@ export abstract class Presenter<V extends View> {
     return this._view;
   }
 
-  protected async doFailureReportingOperation(operation: () => Promise<void>, operationDescription: string,   finallyOperation?: () => void) {
+  protected async doFailureReportingOperation(
+    operation: () => Promise<void>,
+    operationDescription: string,
+    finallyOperation?: () => void
+  ) {
     try {
       await operation();
     } catch (error) {
@@ -21,9 +30,9 @@ export abstract class Presenter<V extends View> {
         `Failed to ${operationDescription} because of exception: ${error}`
       );
     } finally {
-        if (finallyOperation) {
-            finallyOperation();
-        }
+      if (finallyOperation) {
+        finallyOperation();
+      }
     }
   }
 }

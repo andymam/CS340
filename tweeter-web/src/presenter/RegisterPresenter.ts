@@ -1,31 +1,14 @@
-import { To } from "react-router-dom";
-import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../model.service/UserService";
+import { User } from "tweeter-shared";
 import { Buffer } from "buffer";
-import { Presenter, View } from "./Presenter";
+import { AuthPresenter, AuthView } from "./AuthPresenter";
 
-export interface RegisterView extends View {
-  setIsLoading: (value: React.SetStateAction<boolean>) => void;
-  updateUserInfo: (
-    currentUser: User,
-    displayedUser: User | null,
-    authToken: AuthToken,
-    remember: boolean
-  ) => void;
-  navigate: (to: To) => void;
+export interface RegisterView extends AuthView {
   setImageUrl: (url: string) => void;
   setImageBytes: (bytes: Uint8Array) => void;
   setImageFileExtension: (ext: string) => void;
 }
 
-export class RegisterPresenter extends Presenter<RegisterView> {
-  private service: UserService;
-
-  public constructor(view: RegisterView) {
-    super(view);
-    this.service = new UserService();
-  }
-
+export class RegisterPresenter extends AuthPresenter<RegisterView> {
   public async handleImageFile(file: File | undefined) {
     if (file) {
       this.view.setImageUrl(URL.createObjectURL(file));
@@ -71,26 +54,19 @@ export class RegisterPresenter extends Presenter<RegisterView> {
     imageFileExtension: string,
     rememberMe: boolean
   ) {
-    await this.doFailureReportingOperation(
-      async () => {
-        this.view.setIsLoading(true);
-
-        const [user, authToken] = await this.service.register(
+    await this.doAuthOperation(
+      "register user",
+      () =>
+        this.service.register(
           firstName,
           lastName,
           alias,
           password,
           imageBytes,
           imageFileExtension
-        );
-
-        this.view.updateUserInfo(user, user, authToken, rememberMe);
-        this.view.navigate(`/feed/${user.alias}`);
-      },
-      "register user",
-      () => {
-        this.view.setIsLoading(false);
-      }
+        ),
+      rememberMe,
+      (user: User) => this.view.navigate(`/feed/${user.alias}`)
     );
   }
 }

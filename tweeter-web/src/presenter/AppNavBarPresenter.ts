@@ -1,11 +1,9 @@
 import { To } from "react-router-dom";
 import { UserService } from "../model.service/UserService";
 import { AuthToken } from "tweeter-shared";
-import { Presenter, View } from "./Presenter";
+import { MessageView, Presenter } from "./Presenter";
 
-export interface AppNavBarView extends View {
-  displayInfoMessage: (message: string, duration: number) => string;
-  deleteMessage: (messageId: string) => void;
+export interface AppNavBarView extends MessageView {
   clearUserInfo: () => void;
   navigate: (to: To) => void;
 }
