@@ -79,7 +79,6 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     isFollowerAfter: boolean
   ) {
     event.preventDefault();
-
     var toast = "";
 
     await this.doFailureReportingOperation(
