@@ -9,11 +9,15 @@ export interface AppNavBarView extends MessageView {
 }
 
 export class AppNavbarPresenter extends Presenter<AppNavBarView> {
-  private service: UserService;
+  private _service: UserService;
 
   public constructor(view: AppNavBarView) {
     super(view);
-    this.service = new UserService();
+    this._service = new UserService();
+  }
+
+  public get service() {
+    return this._service;
   }
 
   public async logOut(authToken: AuthToken) {
