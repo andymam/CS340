@@ -5,7 +5,7 @@ import { useUserInfo } from "../userInfo/UserInfoHooks";
 import { PostStatusPresenter, PostStatusView } from "../../presenter/PostStatusPresenter";
 
 interface Props {
-  presenterFactory: (view: PostStatusView) => PostStatusPresenter;
+  presenter?: PostStatusPresenter;
 }
 
 const PostStatus = (props: Props) => {
@@ -25,7 +25,7 @@ const PostStatus = (props: Props) => {
 
   const presenterRef = useRef<PostStatusPresenter | null>(null)
   if (!presenterRef.current) {
-    presenterRef.current = props.presenterFactory(view);
+    presenterRef.current = props.presenter ?? new PostStatusPresenter(view);
   }
 
   const submitPost = async (event: React.MouseEvent) => {

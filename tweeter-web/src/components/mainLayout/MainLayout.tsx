@@ -25,9 +25,7 @@ const MainLayout = () => {
                 />
               </div>
               <div className="p-3 border mt-1 rounded bg-light">
-                <PostStatus
-                  presenterFactory={(view) => new PostStatusPresenter(view)}
-                />
+                <PostStatus />
               </div>
             </div>
           </div>

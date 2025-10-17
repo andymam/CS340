@@ -10,7 +10,7 @@ import { LoginPresenter, LoginView } from "../../../presenter/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
-  presenterFactory: (view: LoginView) => LoginPresenter;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -38,7 +38,7 @@ const Login = (props: Props) => {
 
   const presenterRef = useRef<LoginPresenter | null>(null);
   if (!presenterRef.current) {
-    presenterRef.current = props.presenterFactory(view);
+    presenterRef.current = props.presenter ?? new LoginPresenter(view);
   }
 
   const doLogin = async () => {

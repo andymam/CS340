@@ -138,7 +138,6 @@ const UnauthenticatedRoutes = () => {
         element={
           <Login
             originalUrl={location.pathname}
-            presenterFactory={(view) => new LoginPresenter(view)}
           />
         }
       />
@@ -153,7 +152,6 @@ const UnauthenticatedRoutes = () => {
         element={
           <Login
             originalUrl={location.pathname}
-            presenterFactory={(view) => new LoginPresenter(view)}
           />
         }
       />
