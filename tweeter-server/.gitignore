@@ -3,3 +3,6 @@
 /nodejs
 dist.zip
 nodejs.zip
+/.aws-sam
+/layer/nodejs/node_modules
+samconfig.toml
