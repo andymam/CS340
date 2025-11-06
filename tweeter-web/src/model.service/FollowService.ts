@@ -8,8 +8,25 @@ export class FollowService implements Service {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    const response = await fetch("https://k3j8n26lel.execute-api.us-east-2.amazonaws.com/prod/followee/list", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken.token}`,
+      },
+      body: JSON.stringify({
+        userAlias,
+        pageSize,
+        lastItem,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error loading followees: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return [data.items, data.hasMore]; 
   }
 
   public async loadMoreFollowers(
@@ -18,8 +35,25 @@ export class FollowService implements Service {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    const response = await fetch("https://k3j8n26lel.execute-api.us-east-2.amazonaws.com/prod/follower/list", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authToken.token}`,
+      },
+      body: JSON.stringify({
+        userAlias,
+        pageSize,
+        lastItem,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error loading followees: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return [data.items, data.hasMore];
   }
 
   public async getIsFollowerStatus(
