@@ -192,6 +192,19 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
+          /follow/action:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${followActionFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
 
   #
   # SQS Queues
@@ -319,6 +332,20 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /follower/count
+            Method: POST
+          
+  followActionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: followActionFunction
+      Handler: lambda/follow/FollowActionLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /follow/action
             Method: POST
 
   #

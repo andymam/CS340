@@ -1,4 +1,6 @@
 import {
+  FollowActionRequest,
+  FollowActionResponse,
   FollowCountRequest,
   FollowCountResponse,
   IsFollowerRequest,
@@ -108,5 +110,21 @@ export class ServerFacade {
     }
 
     return response.count;
+  }
+
+  public async followAction(
+    request: FollowActionRequest
+  ): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost<
+      FollowActionRequest,
+      FollowActionResponse
+    >(request, "/follow/action");
+
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+
+    return [response.followerCount, response.followeeCount];
   }
 }
