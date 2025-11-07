@@ -2,5 +2,6 @@ BUCKET='tweeter-bucket-andy'
 LAMBDA_ROLE='arn:aws:iam::616843638401:role/tweeter-role'
 EDIT_LAMBDALIST='
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+
 '
 LAMBDALAYER_ARN='arn:aws:lambda:us-east-2:616843638401:layer:tweeterLambdaLayer:3'

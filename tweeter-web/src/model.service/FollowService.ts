@@ -1,32 +1,24 @@
-import { AuthToken, User, FakeData } from "tweeter-shared";
+import { AuthToken, User, FakeData, PagedUserItemRequest } from "tweeter-shared";
 import { Service } from "./Service";
+import { ServerFacade } from "../network/ServerFacade";
+
 
 export class FollowService implements Service {
+  private serverFacade = new ServerFacade();
+
   public async loadMoreFollowees(
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    const response = await fetch("https://k3j8n26lel.execute-api.us-east-2.amazonaws.com/prod/followee/list", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${authToken.token}`,
-      },
-      body: JSON.stringify({
-        userAlias,
-        pageSize,
-        lastItem,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error loading followees: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return [data.items, data.hasMore]; 
+    const request: PagedUserItemRequest = {
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem ? lastItem.dto : null
+    };
+    return await this.serverFacade.getMoreFollowees(request);
   }
 
   public async loadMoreFollowers(
@@ -35,25 +27,13 @@ export class FollowService implements Service {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    const response = await fetch("https://k3j8n26lel.execute-api.us-east-2.amazonaws.com/prod/follower/list", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${authToken.token}`,
-      },
-      body: JSON.stringify({
-        userAlias,
-        pageSize,
-        lastItem,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error loading followees: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return [data.items, data.hasMore];
+    const request: PagedUserItemRequest = {
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem ? lastItem.dto : null
+    };
+    return await this.serverFacade.getMoreFollowers(request);
   }
 
   public async getIsFollowerStatus(
@@ -61,8 +41,11 @@ export class FollowService implements Service {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    return this.serverFacade.getIsFollowerStatus({
+      token: authToken.token,
+      userAlias: user.alias,
+      selectedUserAlias: selectedUser.alias
+    });
   }
 
   public async getFolloweeCount(
