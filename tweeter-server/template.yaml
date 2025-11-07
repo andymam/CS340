@@ -109,7 +109,7 @@ Resources:
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
-          /user/create:
+          /user/register:
             post:
               consumes: *commonConsumes
               produces: *commonProduces
@@ -117,7 +117,7 @@ Resources:
                 type: aws
                 httpMethod: POST
                 uri:
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userCreateFunction.Arn}/invocations
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${registerFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
@@ -310,7 +310,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getUserFunction
-      ##### Modify Handler property to match your code.
       Handler: lambda/user/GetUserLambda.handler
       Policies: *commonPolicies
       Events:
@@ -321,19 +320,18 @@ Resources:
             Path: /user/get
             Method: POST
 
-  userCreateFunction:
+  registerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: userCreateFunction
-      ##### Modify Handler property to match your code.
-      Handler: handlers/users/UserCreateHandler.userCreateHandler
+      FunctionName: registerFunction
+      Handler: lambda/user/RegisterLambda.handler
       Policies: *commonPolicies
       Events:
         PostApi:
           Type: Api
           Properties:
             RestApiId: !Ref tweeterApi
-            Path: /user/create
+            Path: /user/register
             Method: POST
 
   #

@@ -17,6 +17,8 @@ import {
   PagedUserItemResponse,
   PostStatusRequest,
   PostStatusResponse,
+  RegisterRequest,
+  RegisterResponse,
   Status,
   User,
   UserDto,
@@ -237,5 +239,12 @@ export class ServerFacade {
     }
 
     return response;
+  }
+
+  public async register(request: RegisterRequest): Promise<RegisterResponse> {
+    return await this.clientCommunicator.doPost<RegisterRequest, RegisterResponse>(
+      request,
+      "/user/register"
+    );
   }
 }

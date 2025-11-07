@@ -33,7 +33,7 @@ export class UserService implements Service {
   ): Promise<[User, AuthToken]> {
     const response = await this.serverFacade.login({
       alias,
-      password
+      password,
     });
 
     if (!response.success || !response.user || !response.authToken) {
@@ -54,17 +54,25 @@ export class UserService implements Service {
     userImageBytes: Uint8Array,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
+    const imageBase64: string =
       Buffer.from(userImageBytes).toString("base64");
 
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const response = await this.serverFacade.register({
+      firstName,
+      lastName,
+      alias,
+      password,
+      imageBase64,
+      imageFileExtension,
+    });
 
-    if (user === null) {
-      throw new Error("Invalid registration");
+    if (!response.success || !response.user || !response.authToken) {
+      throw new Error(response.message ?? "Registration failed");
     }
 
-    return [user, FakeData.instance.authToken];
+    const user: User = User.fromDto(response.user)!;
+    const authToken: AuthToken = response.authToken;
+
+    return [user, authToken];
   }
 }
