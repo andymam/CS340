@@ -1,4 +1,6 @@
 import {
+  FollowCountRequest,
+  FollowCountResponse,
   IsFollowerRequest,
   IsFollowerResponse,
   PagedUserItemRequest,
@@ -78,5 +80,33 @@ export class ServerFacade {
     }
 
     return response.isFollower;
+  }
+
+  public async getFolloweeCount(request: FollowCountRequest): Promise<number> {
+    const response = await this.clientCommunicator.doPost<
+      FollowCountRequest,
+      FollowCountResponse
+    >(request, "/followee/count");
+
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+
+    return response.count;
+  }
+
+  public async getFollowerCount(request: FollowCountRequest): Promise<number> {
+    const response = await this.clientCommunicator.doPost<
+      FollowCountRequest,
+      FollowCountResponse
+    >(request, "/follower/count");
+
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+
+    return response.count;
   }
 }
