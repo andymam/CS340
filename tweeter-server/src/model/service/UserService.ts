@@ -1,21 +1,14 @@
 import { Buffer } from "buffer";
 import { AuthToken, User, FakeData } from "tweeter-shared";
 import { Service } from "./Service";
-import { ServerFacade } from "../network/ServerFacade";
 
 export class UserService implements Service {
-  private serverFacade = new ServerFacade();
-
   public async getUser(
-    authToken: AuthToken,
+    token: string,
     alias: string
   ): Promise<User | null> {
-    const userDto = await this.serverFacade.getUser({
-      token: authToken.token,
-      alias: alias,
-    });
-
-    return User.fromDto(userDto);
+    // TODO: Replace with the result of calling server
+    return FakeData.instance.findUserByAlias(alias);
   }
 
   public async logout(authToken: AuthToken): Promise<void> {
@@ -37,7 +30,7 @@ export class UserService implements Service {
     return [user, FakeData.instance.authToken];
   }
 
-  public async register(
+  public async register (
     firstName: string,
     lastName: string,
     alias: string,
@@ -57,5 +50,5 @@ export class UserService implements Service {
     }
 
     return [user, FakeData.instance.authToken];
-  }
+  };
 }

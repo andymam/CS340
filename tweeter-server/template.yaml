@@ -105,8 +105,7 @@ Resources:
                 type: aws
                 httpMethod: POST
                 uri:
-                  ##### Change "userGetFunction" to the actual function name.
-                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userGetFunction.Arn}/invocations
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getUserFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
@@ -118,7 +117,6 @@ Resources:
                 type: aws
                 httpMethod: POST
                 uri:
-                  ##### Change "userCreateFunction" to the actual function name.
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${userCreateFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
@@ -244,6 +242,19 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
+          /status/post:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${postStatusFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
   #
   # SQS Queues
   #
@@ -269,12 +280,12 @@ Resources:
   #
   # Web API Lambda functions
   #
-  userGetFunction:
+  getUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: userGetFunction
+      FunctionName: getUserFunction
       ##### Modify Handler property to match your code.
-      Handler: handlers/users/UserGetHandler.userGetHandler
+      Handler: lambda/user/GetUserLambda.handler
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -426,6 +437,20 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /story/list
+            Method: POST
+
+  postStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: postStatusFunction
+      Handler: lambda/status/PostStatusLambda.handler
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /status/post
             Method: POST
 
   #

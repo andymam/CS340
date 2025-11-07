@@ -3,12 +3,16 @@ import {
   FollowActionResponse,
   FollowCountRequest,
   FollowCountResponse,
+  GetUserRequest,
+  GetUserResponse,
   IsFollowerRequest,
   IsFollowerResponse,
   PagedStatusItemRequest,
   PagedStatusItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  PostStatusRequest,
+  PostStatusResponse,
   Status,
   User,
   UserDto,
@@ -179,5 +183,29 @@ export class ServerFacade {
     const items =
       response.items?.map((dto) => Status.fromDto(dto) as Status) ?? [];
     return [items, response.hasMore];
+  }
+
+  public async postStatus(request: PostStatusRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      PostStatusRequest,
+      PostStatusResponse
+    >(request, "/status/post");
+
+    if (!response.success) {
+      throw new Error(response.message ?? undefined);
+    }
+  }
+
+    public async getUser(request: GetUserRequest): Promise<UserDto | null> {
+    const response = await this.clientCommunicator.doPost<
+      GetUserRequest,
+      GetUserResponse
+    >(request, "/user/get");
+
+    if (!response.success) {
+      throw new Error(response.message ?? undefined);
+    }
+
+    return response.user;
   }
 }
