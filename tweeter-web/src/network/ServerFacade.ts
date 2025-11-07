@@ -7,6 +7,10 @@ import {
   GetUserResponse,
   IsFollowerRequest,
   IsFollowerResponse,
+  LoginRequest,
+  LoginResponse,
+  LogoutRequest,
+  LogoutResponse,
   PagedStatusItemRequest,
   PagedStatusItemResponse,
   PagedUserItemRequest,
@@ -196,7 +200,7 @@ export class ServerFacade {
     }
   }
 
-    public async getUser(request: GetUserRequest): Promise<UserDto | null> {
+  public async getUser(request: GetUserRequest): Promise<UserDto | null> {
     const response = await this.clientCommunicator.doPost<
       GetUserRequest,
       GetUserResponse
@@ -207,5 +211,31 @@ export class ServerFacade {
     }
 
     return response.user;
+  }
+
+  public async logout(request: LogoutRequest): Promise<LogoutResponse> {
+    const response = await this.clientCommunicator.doPost<
+      LogoutRequest,
+      LogoutResponse
+    >(request, "/logout");
+
+    if (!response.success) {
+      throw new Error(response.message ?? undefined);
+    }
+
+    return response;
+  }
+
+  public async login(request: LoginRequest): Promise<LoginResponse> {
+    const response = await this.clientCommunicator.doPost<
+      LoginRequest,
+      LoginResponse
+    >(request, "/login");
+
+    if (!response.success) {
+      throw new Error(response.message ?? undefined);
+    }
+
+    return response;
   }
 }

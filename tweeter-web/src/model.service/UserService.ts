@@ -21,20 +21,29 @@ export class UserService implements Service {
   public async logout(authToken: AuthToken): Promise<void> {
     // Pause so we can see the logging out message. Delete when the call to the server is implemented.
     await new Promise((res) => setTimeout(res, 1000));
+
+    await this.serverFacade.logout({
+      token: authToken.token,
+    });
   }
 
   public async login(
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const response = await this.serverFacade.login({
+      alias,
+      password
+    });
 
-    if (user === null) {
-      throw new Error("Invalid alias or password");
+    if (!response.success || !response.user || !response.authToken) {
+      throw new Error(response.message ?? "Login failed");
     }
 
-    return [user, FakeData.instance.authToken];
+    const user: User = User.fromDto(response.user)!;
+    const authToken: AuthToken = response.authToken;
+
+    return [user, authToken];
   }
 
   public async register(
