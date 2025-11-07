@@ -1,4 +1,8 @@
-import { FollowCountRequest, FollowCountResponse, UserDto } from "tweeter-shared";
+import {
+  FollowCountRequest,
+  FollowCountResponse,
+  UserDto,
+} from "tweeter-shared";
 import { FollowService } from "../../model/service/FollowService";
 
 export const handler = async (
@@ -13,10 +17,7 @@ export const handler = async (
     imageUrl: "",
   };
 
-  const count = await followService.getFolloweeCount(
-    request.token,
-    userDto
-  );
+  const count = await followService.getFolloweeCount(request.token, userDto);
 
   return {
     success: true,

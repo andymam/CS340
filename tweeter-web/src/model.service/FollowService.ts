@@ -76,10 +76,9 @@ export class FollowService implements Service {
     authToken: AuthToken,
     userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    return this.serverFacade.followAction({
+    return await this.serverFacade.follow({
       token: authToken.token,
-      userAlias: userToFollow.alias,
-      action: "follow"
+      userAlias: userToFollow.alias
     });
   }
 
@@ -87,10 +86,9 @@ export class FollowService implements Service {
     authToken: AuthToken,
     userToUnfollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    return this.serverFacade.followAction({
+    return await this.serverFacade.unfollow({
       token: authToken.token,
-      userAlias: userToUnfollow.alias,
-      action: "unfollow"
+      userAlias: userToUnfollow.alias
     });
   }
 }

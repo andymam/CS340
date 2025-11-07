@@ -5,8 +5,11 @@ import {
   FollowCountResponse,
   IsFollowerRequest,
   IsFollowerResponse,
+  PagedStatusItemRequest,
+  PagedStatusItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  Status,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -112,13 +115,11 @@ export class ServerFacade {
     return response.count;
   }
 
-  public async followAction(
-    request: FollowActionRequest
-  ): Promise<[number, number]> {
+  public async follow(request: FollowActionRequest): Promise<[number, number]> {
     const response = await this.clientCommunicator.doPost<
       FollowActionRequest,
       FollowActionResponse
-    >(request, "/follow/action");
+    >(request, "/follow");
 
     if (!response.success) {
       console.error(response);
@@ -126,5 +127,57 @@ export class ServerFacade {
     }
 
     return [response.followerCount, response.followeeCount];
+  }
+
+  public async unfollow(
+    request: FollowActionRequest
+  ): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost<
+      FollowActionRequest,
+      FollowActionResponse
+    >(request, "/unfollow");
+
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+
+    return [response.followerCount, response.followeeCount];
+  }
+
+  public async getMoreFeedItems(
+    request: PagedStatusItemRequest
+  ): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<
+      PagedStatusItemRequest,
+      PagedStatusItemResponse
+    >(request, "/feed/list");
+
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+
+    const items =
+      response.items?.map((dto) => Status.fromDto(dto) as Status) ?? [];
+    return [items, response.hasMore];
+  }
+
+  public async getMoreStoryItems(
+    request: PagedStatusItemRequest
+  ): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<
+      PagedStatusItemRequest,
+      PagedStatusItemResponse
+    >(request, "/story/list");
+
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? undefined);
+    }
+
+    const items =
+      response.items?.map((dto) => Status.fromDto(dto) as Status) ?? [];
+    return [items, response.hasMore];
   }
 }
