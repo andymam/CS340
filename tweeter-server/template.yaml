@@ -553,4 +553,59 @@ Resources:
   #
   # ADD MORE TABLE DEFINITIONS HERE
   #
+
+  usersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: users
+      AttributeDefinitions:
+        - AttributeName: handle
+          AttributeType: S
+      KeySchema:
+        - AttributeName: handle
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  storyTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: story
+      AttributeDefinitions:
+        - AttributeName: author_handle
+          AttributeType: S
+        - AttributeName: time_stamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: author_handle
+          KeyType: HASH
+        - AttributeName: time_stamp
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
   
+  feedTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: feed
+      AttributeDefinitions:
+        - AttributeName: feed_owner_handle
+          AttributeType: S
+        - AttributeName: time_stamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: feed_owner_handle
+          KeyType: HASH
+        - AttributeName: time_stamp
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+  authtokensTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: authtokens
+      AttributeDefinitions:
+        - AttributeName: auth_token
+          AttributeType: S
+      KeySchema:
+        - AttributeName: auth_token
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
