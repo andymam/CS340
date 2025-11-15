@@ -3,12 +3,11 @@ import {
   FollowActionResponse,
   UserDto,
 } from "tweeter-shared";
-import { FollowService } from "../../model/service/FollowService";
+import { followService } from "../../model/serviceFactory";
 
 export const handler = async (
   request: FollowActionRequest
 ): Promise<FollowActionResponse> => {
-  const followService = new FollowService();
 
   const userDto: UserDto = {
     alias: request.userAlias,

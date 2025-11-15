@@ -38,6 +38,20 @@ Metadata:
 # AWS resource definitions
 #
 Resources:
+
+  TweeterBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      AccessControl: PublicRead
+
   #
   # Web API
   #
@@ -312,6 +326,10 @@ Resources:
       FunctionName: getUserFunction
       Handler: lambda/user/GetUserLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          TWEETER_BUCKET: !Ref TweeterBucket
+          REGION: !Ref AWS::Region
       Events:
         PostApi:
           Type: Api
@@ -326,6 +344,10 @@ Resources:
       FunctionName: registerFunction
       Handler: lambda/user/RegisterLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          TWEETER_BUCKET: !Ref TweeterBucket
+          REGION: !Ref AWS::Region
       Events:
         PostApi:
           Type: Api

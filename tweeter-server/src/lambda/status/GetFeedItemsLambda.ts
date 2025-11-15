@@ -3,12 +3,11 @@ import {
   PagedStatusItemResponse,
   Status,
 } from "tweeter-shared";
-import { StatusService } from "../../model/service/StatusService";
+import { statusService } from "../../model/serviceFactory";
 
 export const handler = async (
   request: PagedStatusItemRequest
 ): Promise<PagedStatusItemResponse> => {
-  const statusService = new StatusService();
 
   const lastStatus: Status | null = Status.fromDto(request.lastItem);
 

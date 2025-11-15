@@ -1,15 +1,54 @@
-import { AuthToken, Status, FakeData } from "tweeter-shared";
+import { Status, User } from "tweeter-shared";
 import { Service } from "./Service";
+import { UsersDAO } from "../../dao/interfaces/UsersDAO";
+import { AuthorizationService } from "./AuthorizationService";
+import { FeedDAO } from "../../dao/interfaces/FeedDAO";
+import { StoryDAO } from "../../dao/interfaces/StoryDAO";
 
 export class StatusService implements Service {
+  constructor(
+    private usersDAO: UsersDAO,
+    private authorizationService: AuthorizationService,
+    private feedDAO: FeedDAO,
+    private storyDAO: StoryDAO
+  ) {}
+
   public async loadMoreFeedItems(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    await this.authorizationService.authorize(token);
+
+    const userRecord = await this.usersDAO.getUser(userAlias);
+    if (!userRecord) {
+      throw new Error(`User ${userAlias} not found`);
+    }
+
+    const [statusRecords, hasMore] = await this.feedDAO.getFeedPage(
+      userAlias,
+      pageSize,
+      lastItem
+    );
+
+    const statuses = await Promise.all(
+      statusRecords.map(async (record) => {
+        const userRecord = await this.usersDAO.getUser(record.alias);
+        if (!userRecord) throw new Error("User not found");
+
+        const user = new User(
+          userRecord.firstName,
+          userRecord.lastName,
+          userRecord.alias,
+          userRecord.imageUrl ?? null
+        );
+
+        return new Status(record.post, user, record.timestamp);
+      })
+    );
+
+    return [statuses, hasMore];
   }
 
   public async loadMoreStoryItems(
@@ -18,14 +57,39 @@ export class StatusService implements Service {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    await this.authorizationService.authorize(token);
+
+    const userRecord = await this.usersDAO.getUser(userAlias);
+    if (!userRecord) {
+      throw new Error(`User ${userAlias} not found`);
+    }
+
+    const [statusRecords, hasMore] = await this.storyDAO.getStoryPage(
+      userAlias,
+      pageSize,
+      lastItem
+    );
+
+    const statuses = await Promise.all(
+      statusRecords.map(async (record) => {
+        const userRecord = await this.usersDAO.getUser(record.alias);
+        if (!userRecord) throw new Error("User not found");
+
+        const user = new User(
+          userRecord.firstName,
+          userRecord.lastName,
+          userRecord.alias,
+          userRecord.imageUrl ?? null
+        );
+
+        return new Status(record.post, user, record.timestamp);
+      })
+    );
+
+    return [statuses, hasMore];
   }
 
-  public async postStatus(
-    token: string,
-    newStatus: Status
-  ): Promise<void> {
+  public async postStatus(token: string, newStatus: Status): Promise<void> {
     // Pause so we can see the logging out message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));
 
