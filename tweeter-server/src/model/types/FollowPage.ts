@@ -1,4 +1,3 @@
-import { User } from "tweeter-shared";
 import { FollowRecord } from "./FollowRecord";
 
 export interface FollowPage {

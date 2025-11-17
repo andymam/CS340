@@ -8,3 +8,4 @@ export interface FollowDAO {
   getFollowerCount(handle: string): Promise<number>;
   getFolloweeCount(handle: string): Promise<number>;
 }
+

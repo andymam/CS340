@@ -4,13 +4,15 @@ import { UsersDAO } from "../../dao/interfaces/UsersDAO";
 import { AuthorizationService } from "./AuthorizationService";
 import { FeedDAO } from "../../dao/interfaces/FeedDAO";
 import { StoryDAO } from "../../dao/interfaces/StoryDAO";
+import { FollowDAO } from "../../dao/interfaces/FollowDAO";
 
 export class StatusService implements Service {
   constructor(
     private usersDAO: UsersDAO,
     private authorizationService: AuthorizationService,
     private feedDAO: FeedDAO,
-    private storyDAO: StoryDAO
+    private storyDAO: StoryDAO,
+    private followDAO: FollowDAO
   ) {}
 
   public async loadMoreFeedItems(
@@ -90,9 +92,21 @@ export class StatusService implements Service {
   }
 
   public async postStatus(token: string, newStatus: Status): Promise<void> {
-    // Pause so we can see the logging out message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    await this.authorizationService.authorize(token);
 
-    // TODO: Call the server to post the status
+    const posterHandle = newStatus.user.alias;
+
+    await this.storyDAO.addStatus(newStatus);
+
+    const followerPage = await this.followDAO.getFollowers(posterHandle, 1000);
+    const followerAliases = followerPage.items.map(
+      (record) => record.follower_handle
+    );
+
+    await Promise.all(
+      followerAliases.map((alias: string) =>
+        this.feedDAO.addStatusToFeed(newStatus, alias)
+      )
+    );
   }
 }
