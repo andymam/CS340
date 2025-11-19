@@ -8,12 +8,11 @@ export interface StoryDAO {
     userAlias: string,
     pageSize: number,
     lastItem: Status | null
-  ): Promise<[StatusRecord[], boolean]>;
+  ): Promise<[StatusRecord[], boolean, any]>;
 }
 
 export interface StatusRecord {
   alias: string;
   post: string;
   timestamp: number;
-  imageUrl?: string | null;
 }

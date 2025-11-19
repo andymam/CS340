@@ -7,8 +7,8 @@ import { AuthorizationService } from "./AuthorizationService";
 export class FollowService implements Service {
   constructor(
     private usersDAO: UsersDAO,
-    private authorizationService: AuthorizationService,
-    private followDAO: FollowDAO
+    private followDAO: FollowDAO,
+    private authorizationService: AuthorizationService
   ) {}
 
   public async loadMoreFollowees(

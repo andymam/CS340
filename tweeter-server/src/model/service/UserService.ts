@@ -61,6 +61,9 @@ export class UserService implements Service {
     const tokenValue = crypto.randomUUID();
     const authToken = new AuthToken(tokenValue, timestamp);
 
+    await this.authTokenDAO.createAuthToken(authToken, alias);
+
+
     return [user, authToken];
   }
 
@@ -91,7 +94,7 @@ export class UserService implements Service {
     const timestamp = Date.now();
     const tokenValue = crypto.randomUUID();
     const authToken = new AuthToken(tokenValue, timestamp);
-    await this.authTokenDAO.createAuthToken(authToken);
+    await this.authTokenDAO.createAuthToken(authToken, alias);
 
     return [newUser, authToken];
   }

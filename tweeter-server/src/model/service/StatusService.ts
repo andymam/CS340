@@ -9,10 +9,10 @@ import { FollowDAO } from "../../dao/interfaces/FollowDAO";
 export class StatusService implements Service {
   constructor(
     private usersDAO: UsersDAO,
-    private authorizationService: AuthorizationService,
     private feedDAO: FeedDAO,
     private storyDAO: StoryDAO,
-    private followDAO: FollowDAO
+    private followDAO: FollowDAO,
+    private authorizationService: AuthorizationService,
   ) {}
 
   public async loadMoreFeedItems(

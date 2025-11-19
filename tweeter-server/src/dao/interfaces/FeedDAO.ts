@@ -9,5 +9,5 @@ export interface FeedDAO {
     userAlias: string,
     pageSize: number,
     lastItem: Status | null
-  ): Promise<[StatusRecord[], boolean]>;
+  ): Promise<[StatusRecord[], boolean, any]>;
 }

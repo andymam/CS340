@@ -328,6 +328,8 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          USERS_TABLE: !Ref usersTable
           TWEETER_BUCKET: !Ref TweeterBucket
           REGION: !Ref AWS::Region
       Events:
@@ -346,6 +348,8 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
+          USERS_TABLE: !Ref usersTable
+          AUTHTOKENS_TABLE: !Ref authtokensTable
           TWEETER_BUCKET: !Ref TweeterBucket
           REGION: !Ref AWS::Region
       Events:
@@ -365,6 +369,11 @@ Resources:
       FunctionName: getFolloweesFunction
       Handler: lambda/follow/GetFolloweesLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -379,6 +388,11 @@ Resources:
       FunctionName: getFollowersFunction
       Handler: lambda/follow/GetFollowersLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -393,6 +407,11 @@ Resources:
       FunctionName: getIsFollowerFunction
       Handler: lambda/follow/GetIsFollowerLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -407,6 +426,11 @@ Resources:
       FunctionName: getFolloweeCountFunction
       Handler: lambda/follow/GetFolloweeCountLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -421,6 +445,11 @@ Resources:
       FunctionName: getFollowerCountFunction
       Handler: lambda/follow/GetFollowerCountLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -435,6 +464,11 @@ Resources:
       FunctionName: followFunction
       Handler: lambda/follow/FollowLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -449,6 +483,11 @@ Resources:
       FunctionName: unfollowFunction
       Handler: lambda/follow/UnfollowLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -463,6 +502,11 @@ Resources:
       FunctionName: getFeedItemsFunction
       Handler: lambda/status/GetFeedItemsLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          FEED_TABLE: !Ref feedTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -477,6 +521,11 @@ Resources:
       FunctionName: getStoryItemsFunction
       Handler: lambda/status/GetStoryItemsLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          STORY_TABLE: !Ref storyTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -491,6 +540,12 @@ Resources:
       FunctionName: postStatusFunction
       Handler: lambda/status/PostStatusLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -505,6 +560,10 @@ Resources:
       FunctionName: logoutFunction
       Handler: lambda/user/LogoutLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -519,6 +578,10 @@ Resources:
       FunctionName: loginFunction
       Handler: lambda/user/LoginLambda.handler
       Policies: *commonPolicies
+      Environment:
+        Variables:
+          AUTHTOKENS_TABLE: !Ref authtokensTable
+          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api

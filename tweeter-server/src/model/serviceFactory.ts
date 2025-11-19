@@ -1,4 +1,9 @@
+import { AuthTokenDAOAWS } from "../dao/dynamo/AuthTokenDAOAWS";
+import { FeedDAOAWS } from "../dao/dynamo/FeedDAOAWS";
+import { FollowDAOAWS } from "../dao/dynamo/FollowDAOAWS";
 import { S3DAOAWS } from "../dao/dynamo/S3DAOAWS";
+import { StoryDAOAWS } from "../dao/dynamo/StoryDAOAWS";
+import { UsersDAOAWS } from "../dao/dynamo/UsersDAOAWS";
 import { AuthorizationService } from "./service/AuthorizationService";
 import { FollowService } from "./service/FollowService";
 import { StatusService } from "./service/StatusService";
@@ -15,5 +20,5 @@ const s3DAO = new S3DAOAWS();
 const authorizationService = new AuthorizationService(authTokenDAO);
 
 export const userService = new UserService(usersDAO, s3DAO, authorizationService, authTokenDAO);
-export const followService = new FollowService(followDAO, authorizationService);
-export const statusService = new StatusService(feedDAO, storyDAO, authorizationService);
+export const followService = new FollowService(usersDAO, followDAO, authorizationService);
+export const statusService = new StatusService(usersDAO, feedDAO, storyDAO, followDAO, authorizationService);
