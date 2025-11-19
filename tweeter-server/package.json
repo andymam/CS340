@@ -14,6 +14,8 @@
   "dependencies": {
     "tweeter-shared": "file:../tweeter-shared",
     "date-fns": "^3.3.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "bcryptjs": "^2.4.3",
+    "@types/bcryptjs": "^2.4.2"
   }
 }

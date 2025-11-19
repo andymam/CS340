@@ -49,13 +49,20 @@ export class UserService implements Service {
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    const user = (await this.usersDAO.getUser(alias)) as UserWithPassword;
-    if (!user) {
+    const userRecord = await this.usersDAO.getUser(alias);
+    if (!userRecord) {
       throw new Error("Invalid alias or password");
     }
 
-    const passwordMatches = await bcrypt.compare(password, user.hashedPassword);
+    const passwordMatches = await bcrypt.compare(password, userRecord.hashedPassword);
     if (!passwordMatches) throw new Error("Invalid alias or password");
+
+    const user = new User(
+      userRecord.firstName,
+      userRecord.lastName,
+      userRecord.alias,
+      userRecord.imageUrl
+    );
 
     const timestamp = Date.now();
     const tokenValue = crypto.randomUUID();

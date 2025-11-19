@@ -1,5 +1,5 @@
-import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { StatusRecord, StoryDAO } from "../interfaces/StoryDAO";
 import { Status, User } from "tweeter-shared";
 import { StatusPage } from "../../model/types/StatusPage";
@@ -54,18 +54,18 @@ export class StoryDAOAWS implements StoryDAO {
         TableName: this.tableName,
         KeyConditionExpression: "author_alias = :alias",
         ExpressionAttributeValues: {
-          ":alias": { S: userAlias },
+          ":alias": userAlias,
         },
         Limit: pageSize,
-        ExclusiveStartKey: lastItem,
+        ExclusiveStartKey: lastItem ?? undefined,
         ScanIndexForward: false,
       })
     );
 
     const records: StatusRecord[] = (result.Items ?? []).map((item) => ({
-      alias: item.author_alias?.S ?? "",
-      post: item.post?.S ?? "",
-      timestamp: Number(item.time_stamp?.N ?? 0),
+      alias: item.author_alias,
+      post: item.post,
+      timestamp: item.time_stamp,
     }));
 
     const hasMore = !!result.LastEvaluatedKey;

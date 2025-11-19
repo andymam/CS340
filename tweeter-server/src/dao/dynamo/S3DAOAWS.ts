@@ -14,16 +14,18 @@ export class S3DAOAWS implements S3DAO {
   }
 
   async uploadImage(key: string, data: Buffer): Promise<string> {
+    const fullKey = `image/${key}`;
+    
     await this.s3.send(
       new PutObjectCommand({
         Bucket: this.bucket,
-        Key: `${key}`,
+        Key: fullKey,
         Body: data,
         ContentType: "image/png",
-        ACL: "public-read",
+        // ACL: "public-read",
       })
     );
 
-    return `https://${this.bucket}.s3.${this.region}.amazonaws.com/image/${key}`;
+    return `https://${this.bucket}.s3.${this.region}.amazonaws.com/${fullKey}`;
   }
 }

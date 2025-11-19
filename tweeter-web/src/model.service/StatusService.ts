@@ -1,4 +1,9 @@
-import { AuthToken, Status, PagedStatusItemRequest, PostStatusRequest } from "tweeter-shared";
+import {
+  AuthToken,
+  Status,
+  PagedStatusItemRequest,
+  PostStatusRequest,
+} from "tweeter-shared";
 import { Service } from "./Service";
 import { ServerFacade } from "../network/ServerFacade";
 
@@ -11,6 +16,8 @@ export class StatusService implements Service {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
+    console.log("AUTH TOKEN:", authToken);
+    console.log("AUTH TOKEN.token:", authToken.token);
     const request: PagedStatusItemRequest = {
       token: authToken.token,
       userAlias,

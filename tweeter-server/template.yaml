@@ -42,15 +42,23 @@ Resources:
   TweeterBucket:
     Type: AWS::S3::Bucket
     Properties:
-      OwnershipControls:
-        Rules:
-          - ObjectOwnership: BucketOwnerPreferred
+      BucketName: !Sub tweeter-bucket-${AWS::AccountId}
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
         BlockPublicPolicy: false
         IgnorePublicAcls: false
         RestrictPublicBuckets: false
-      AccessControl: PublicRead
+
+  TweeterBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref TweeterBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub '${TweeterBucket.Arn}/*'
 
   #
   # Web API
@@ -328,8 +336,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
           TWEETER_BUCKET: !Ref TweeterBucket
           REGION: !Ref AWS::Region
       Events:
@@ -349,7 +360,10 @@ Resources:
       Environment:
         Variables:
           USERS_TABLE: !Ref usersTable
-          AUTHTOKENS_TABLE: !Ref authtokensTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
           TWEETER_BUCKET: !Ref TweeterBucket
           REGION: !Ref AWS::Region
       Events:
@@ -371,9 +385,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          FOLLOW_TABLE: !Ref followTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -390,9 +406,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          FOLLOW_TABLE: !Ref followTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -409,9 +427,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          FOLLOW_TABLE: !Ref followTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -428,9 +448,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          FOLLOW_TABLE: !Ref followTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -447,9 +469,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          FOLLOW_TABLE: !Ref followTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -466,9 +490,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          FOLLOW_TABLE: !Ref followTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -485,9 +511,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          FOLLOW_TABLE: !Ref followTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -504,9 +532,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          FEED_TABLE: !Ref feedTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -523,9 +553,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
-          STORY_TABLE: !Ref storyTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -542,10 +574,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
+          USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
           STORY_TABLE: !Ref storyTable
           FEED_TABLE: !Ref feedTable
-          USERS_TABLE: !Ref usersTable
       Events:
         PostApi:
           Type: Api
@@ -562,8 +595,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -580,8 +616,11 @@ Resources:
       Policies: *commonPolicies
       Environment:
         Variables:
-          AUTHTOKENS_TABLE: !Ref authtokensTable
           USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
       Events:
         PostApi:
           Type: Api
@@ -615,22 +654,22 @@ Resources:
     Properties:
       TableName: follow
       AttributeDefinitions:
-        - AttributeName: follower_alias
+        - AttributeName: follower_handle
           AttributeType: S
-        - AttributeName: followee_alias
+        - AttributeName: followee_handle
           AttributeType: S
       KeySchema:
-        - AttributeName: follower_alias
+        - AttributeName: follower_handle
           KeyType: HASH
-        - AttributeName: followee_alias
+        - AttributeName: followee_handle
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
       GlobalSecondaryIndexes:
         - IndexName: follow_index
           KeySchema:
-            - AttributeName: followee_alias
+            - AttributeName: followee_handle
               KeyType: HASH
-            - AttributeName: follower_alias
+            - AttributeName: follower_handle
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
@@ -644,10 +683,10 @@ Resources:
     Properties:
       TableName: users
       AttributeDefinitions:
-        - AttributeName: handle
+        - AttributeName: alias
           AttributeType: S
       KeySchema:
-        - AttributeName: handle
+        - AttributeName: alias
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
@@ -656,12 +695,12 @@ Resources:
     Properties:
       TableName: story
       AttributeDefinitions:
-        - AttributeName: author_handle
+        - AttributeName: author_alias
           AttributeType: S
         - AttributeName: time_stamp
-          AttributeType: S
+          AttributeType: N
       KeySchema:
-        - AttributeName: author_handle
+        - AttributeName: author_alias
           KeyType: HASH
         - AttributeName: time_stamp
           KeyType: RANGE
@@ -672,12 +711,12 @@ Resources:
     Properties:
       TableName: feed
       AttributeDefinitions:
-        - AttributeName: feed_owner_handle
+        - AttributeName: follower_alias
           AttributeType: S
         - AttributeName: time_stamp
-          AttributeType: S
+          AttributeType: N
       KeySchema:
-        - AttributeName: feed_owner_handle
+        - AttributeName: follower_alias
           KeyType: HASH
         - AttributeName: time_stamp
           KeyType: RANGE
@@ -688,9 +727,9 @@ Resources:
     Properties:
       TableName: authtokens
       AttributeDefinitions:
-        - AttributeName: auth_token
+        - AttributeName: token
           AttributeType: S
       KeySchema:
-        - AttributeName: auth_token
+        - AttributeName: token
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST

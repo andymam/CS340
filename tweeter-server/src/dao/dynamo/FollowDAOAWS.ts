@@ -1,10 +1,10 @@
-import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, UpdateCommand, DeleteCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, QueryCommand, UpdateCommand, DeleteCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { FollowPage } from "../../model/types/FollowPage";
 import { FollowDAO } from "../interfaces/FollowDAO";
 
 export class FollowDAOAWS implements FollowDAO {
-  private readonly followsTableName = process.env.FOLLOWS_TABLE!;
+  private readonly followsTableName = process.env.FOLLOW_TABLE!;
   private readonly usersTableName = process.env.USERS_TABLE!;
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
@@ -82,10 +82,10 @@ export class FollowDAOAWS implements FollowDAO {
     const result = await this.client.send(
       new QueryCommand({
         TableName: this.followsTableName,
-        IndexName: "followee_index",
+        IndexName: "follow_index",
         KeyConditionExpression: "followee_handle = :handle",
         ExpressionAttributeValues: {
-          ":handle": { S: handle },
+          ":handle": handle,
         },
         Limit: limit,
         ExclusiveStartKey: lastKey,
@@ -93,8 +93,8 @@ export class FollowDAOAWS implements FollowDAO {
     );
 
     const items = (result.Items ?? []).map((item) => ({
-      follower_handle: item.follower_handle?.S ?? "",
-      followee_handle: item.followee_handle?.S ?? "",
+      follower_handle: item.follower_handle,
+      followee_handle: item.followee_handle,
     }));
 
     return {
@@ -114,7 +114,7 @@ export class FollowDAOAWS implements FollowDAO {
         TableName: this.followsTableName,
         KeyConditionExpression: "follower_handle = :handle",
         ExpressionAttributeValues: {
-          ":handle": { S: handle },
+          ":handle": handle,
         },
         Limit: limit,
         ExclusiveStartKey: lastKey,
@@ -122,8 +122,8 @@ export class FollowDAOAWS implements FollowDAO {
     );
 
     const items = (result.Items ?? []).map((item) => ({
-      follower_handle: item.follower_handle?.S ?? "",
-      followee_handle: item.followee_handle?.S ?? "",
+      follower_handle: item.follower_handle,
+      followee_handle: item.followee_handle,
     }));
 
     return {

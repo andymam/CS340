@@ -1,4 +1,5 @@
 import {
+  AuthToken,
   FollowActionRequest,
   FollowActionResponse,
   FollowCountRequest,
@@ -27,7 +28,7 @@ import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
   private SERVER_URL =
-    "https://k3j8n26lel.execute-api.us-east-2.amazonaws.com/prod";
+    "https://6txgrhu40g.execute-api.us-east-2.amazonaws.com/prod";
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
@@ -238,13 +239,33 @@ export class ServerFacade {
       throw new Error(response.message ?? undefined);
     }
 
+    if (response.authToken) {
+      response.authToken = new AuthToken(
+        (response.authToken as any)._token,
+        (response.authToken as any)._timestamp
+      );
+    }
+
     return response;
   }
 
   public async register(request: RegisterRequest): Promise<RegisterResponse> {
-    return await this.clientCommunicator.doPost<RegisterRequest, RegisterResponse>(
-      request,
-      "/user/register"
-    );
+    const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      RegisterResponse
+    >(request, "/user/register");
+
+    if (!response.success) {
+      throw new Error(response.message ?? undefined);
+    }
+
+    if (response.authToken) {
+      response.authToken = new AuthToken(
+        (response.authToken as any)._token,
+        (response.authToken as any)._timestamp
+      );
+    }
+
+    return response;
   }
 }

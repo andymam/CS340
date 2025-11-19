@@ -14,6 +14,8 @@ export class AuthTokenDAOAWS implements AuthTokenDAO {
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
   async getAuthToken(token: string): Promise<AuthRecord | null> {
+    console.log("AUTH TOKEN VALUE:", JSON.stringify(token));
+    console.log("AUTH TOKEN TYPE:", typeof token);
     const result = await this.client.send(
       new GetCommand({
         TableName: this.tableName,
