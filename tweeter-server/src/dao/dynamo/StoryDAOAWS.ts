@@ -49,6 +49,14 @@ export class StoryDAOAWS implements StoryDAO {
     pageSize: number,
     lastItem: any
   ): Promise<[StatusRecord[], boolean, any]> {
+    let exclusiveStartKey = undefined;
+    if (lastItem) {
+      exclusiveStartKey = {
+        author_alias: userAlias,
+        time_stamp: lastItem.timestamp || lastItem.time_stamp || lastItem._timestamp
+      };
+    }
+
     const result = await this.client.send(
       new QueryCommand({
         TableName: this.tableName,
@@ -57,7 +65,7 @@ export class StoryDAOAWS implements StoryDAO {
           ":alias": userAlias,
         },
         Limit: pageSize,
-        ExclusiveStartKey: lastItem ?? undefined,
+        ExclusiveStartKey: exclusiveStartKey,
         ScanIndexForward: false,
       })
     );

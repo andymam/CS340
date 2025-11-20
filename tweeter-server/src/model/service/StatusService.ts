@@ -95,18 +95,23 @@ export class StatusService implements Service {
     await this.authorizationService.authorize(token);
 
     const posterHandle = newStatus.user.alias;
+    console.log("Posting status for:", posterHandle);
 
     await this.storyDAO.addStatus(newStatus);
+    console.log("Added to story");
 
     const followerPage = await this.followDAO.getFollowers(posterHandle, 1000);
+    console.log("Found followers:", followerPage.items);
     const followerAliases = followerPage.items.map(
       (record) => record.follower_handle
     );
+    console.log("Follower aliases:", followerAliases);
 
     await Promise.all(
       followerAliases.map((alias: string) =>
         this.feedDAO.addStatusToFeed(newStatus, alias)
       )
     );
+    console.log("Added to all feeds");
   }
 }

@@ -79,6 +79,15 @@ export class FollowDAOAWS implements FollowDAO {
     limit: number,
     lastKey?: any
   ): Promise<FollowPage> {
+
+    let exclusiveStartKey = undefined;
+    if (lastKey) {
+      exclusiveStartKey = {
+        followee_handle: lastKey.followee_handle || handle,
+        follower_handle: lastKey.follower_handle || lastKey.alias
+      };
+    }
+
     const result = await this.client.send(
       new QueryCommand({
         TableName: this.followsTableName,
@@ -88,7 +97,7 @@ export class FollowDAOAWS implements FollowDAO {
           ":handle": handle,
         },
         Limit: limit,
-        ExclusiveStartKey: lastKey,
+        ExclusiveStartKey: exclusiveStartKey,
       })
     );
 
@@ -109,6 +118,15 @@ export class FollowDAOAWS implements FollowDAO {
     limit: number,
     lastKey?: any
   ): Promise<FollowPage> {
+
+    let exclusiveStartKey = undefined;
+    if (lastKey) {
+      exclusiveStartKey = {
+        followee_handle: lastKey.followee_handle || handle,
+        follower_handle: lastKey.follower_handle || lastKey.alias
+      };
+    }
+
     const result = await this.client.send(
       new QueryCommand({
         TableName: this.followsTableName,
@@ -117,7 +135,7 @@ export class FollowDAOAWS implements FollowDAO {
           ":handle": handle,
         },
         Limit: limit,
-        ExclusiveStartKey: lastKey,
+        ExclusiveStartKey: exclusiveStartKey,
       })
     );
 
