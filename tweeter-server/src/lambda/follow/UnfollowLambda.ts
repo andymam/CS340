@@ -3,7 +3,7 @@ import {
   FollowActionResponse,
   UserDto,
 } from "tweeter-shared";
-import { followService } from "../../model/serviceFactory";
+import { followService } from "../../factory/serviceFactory";
 
 export const handler = async (
   request: FollowActionRequest

@@ -3,13 +3,19 @@ import { Service } from "./Service";
 import { UsersDAO } from "../../dao/interfaces/UsersDAO";
 import { FollowDAO } from "../../dao/interfaces/FollowDAO";
 import { AuthorizationService } from "./AuthorizationService";
+import { AbstractDAOFactory } from "../../factory/AbstractDAOFactory";
 
 export class FollowService implements Service {
-  constructor(
-    private usersDAO: UsersDAO,
-    private followDAO: FollowDAO,
-    private authorizationService: AuthorizationService
-  ) {}
+  private usersDAO: UsersDAO;
+  private followDAO: FollowDAO;
+  private authorizationService: AuthorizationService;
+
+  constructor(daoFactory: AbstractDAOFactory) {
+    this.usersDAO = daoFactory.getUsersDAO();
+    this.followDAO = daoFactory.getFollowDAO();
+    const authTokenDAO = daoFactory.getAuthTokenDAO();
+    this.authorizationService = new AuthorizationService(authTokenDAO);
+  }
 
   public async loadMoreFollowees(
     token: string,

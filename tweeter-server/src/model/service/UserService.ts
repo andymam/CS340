@@ -7,22 +7,28 @@ import { AuthorizationService } from "./AuthorizationService";
 import { AuthTokenDAO } from "../../dao/interfaces/AuthTokenDAO";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { AbstractDAOFactory } from "../../factory/AbstractDAOFactory";
 
 interface UserWithPassword extends User {
   hashedPassword: string;
 }
 
 export class UserService implements Service {
-  constructor(
-    private usersDAO: UsersDAO,
-    private s3DAO: S3DAO,
-    private authorizationService: AuthorizationService,
-    private authTokenDAO: AuthTokenDAO
-  ) {}
+  private usersDAO: UsersDAO;
+  private s3DAO: S3DAO;
+  private authorizationService: AuthorizationService;
+  private authTokenDAO: AuthTokenDAO;
+  
+  constructor(daoFactory: AbstractDAOFactory) {
+    this.usersDAO = daoFactory.getUsersDAO();
+    this.s3DAO = daoFactory.getS3DAO();
+    this.authTokenDAO = daoFactory.getAuthTokenDAO();
+    this.authorizationService = new AuthorizationService(this.authTokenDAO);
+  }
 
   public async getUser(token: string, alias: string): Promise<User | null> {
     await this.authorizationService.authorize(token);
-    
+
     const userRecord = await this.usersDAO.getUser(alias);
     if (!userRecord) {
       return null;
@@ -35,7 +41,7 @@ export class UserService implements Service {
       userRecord.imageUrl ?? null
     );
 
-    return user
+    return user;
   }
 
   public async logout(token: string): Promise<void> {
@@ -54,7 +60,10 @@ export class UserService implements Service {
       throw new Error("Invalid alias or password");
     }
 
-    const passwordMatches = await bcrypt.compare(password, userRecord.hashedPassword);
+    const passwordMatches = await bcrypt.compare(
+      password,
+      userRecord.hashedPassword
+    );
     if (!passwordMatches) throw new Error("Invalid alias or password");
 
     const user = new User(
@@ -69,7 +78,6 @@ export class UserService implements Service {
     const authToken = new AuthToken(tokenValue, timestamp);
 
     await this.authTokenDAO.createAuthToken(authToken, alias);
-
 
     return [user, authToken];
   }
@@ -95,7 +103,7 @@ export class UserService implements Service {
       firstName,
       lastName,
       imageUrl,
-      hashedPassword
+      hashedPassword,
     });
 
     const timestamp = Date.now();

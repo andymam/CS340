@@ -1,5 +1,5 @@
 import { RegisterRequest, RegisterResponse } from "tweeter-shared";
-import { userService } from "../../model/serviceFactory";
+import { userService } from "../../factory/serviceFactory";
 
 export const handler = async (
     request: RegisterRequest

@@ -3,7 +3,7 @@ import {
   PagedStatusItemResponse,
   Status,
 } from "tweeter-shared";
-import { statusService } from "../../model/serviceFactory";
+import { statusService } from "../../factory/serviceFactory";
 
 export const handler = async (
   request: PagedStatusItemRequest

@@ -5,15 +5,23 @@ import { AuthorizationService } from "./AuthorizationService";
 import { FeedDAO } from "../../dao/interfaces/FeedDAO";
 import { StoryDAO } from "../../dao/interfaces/StoryDAO";
 import { FollowDAO } from "../../dao/interfaces/FollowDAO";
+import { AbstractDAOFactory } from "../../factory/AbstractDAOFactory";
 
 export class StatusService implements Service {
-  constructor(
-    private usersDAO: UsersDAO,
-    private feedDAO: FeedDAO,
-    private storyDAO: StoryDAO,
-    private followDAO: FollowDAO,
-    private authorizationService: AuthorizationService,
-  ) {}
+  private usersDAO: UsersDAO;
+  private feedDAO: FeedDAO;
+  private storyDAO: StoryDAO;
+  private followDAO: FollowDAO;
+  private authorizationService: AuthorizationService;
+  
+  constructor(daoFactory: AbstractDAOFactory) {
+   this.usersDAO = daoFactory.getUsersDAO();
+   this.feedDAO = daoFactory.getFeedDAO();
+   this.storyDAO = daoFactory.getStoryDAO();
+   this.followDAO = daoFactory.getFollowDAO();
+   const authTokenDAO = daoFactory.getAuthTokenDAO();
+   this.authorizationService = new AuthorizationService(authTokenDAO);
+  }
 
   public async loadMoreFeedItems(
     token: string,
