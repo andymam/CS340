@@ -1,13 +1,44 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+} from "@aws-sdk/lib-dynamodb";
 import { Status, User } from "tweeter-shared";
 import { StatusPage } from "../../model/types/StatusPage";
 import { FeedDAO } from "../interfaces/FeedDAO";
 import { StatusRecord } from "../interfaces/StoryDAO";
+import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 
 export class FeedDAOAWS implements FeedDAO {
   private readonly tableName = process.env.FEED_TABLE!;
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+
+  async batchAddToFeeds(
+    status: Status,
+    followerAliases: string[]
+  ): Promise<void> {
+    if (followerAliases.length === 0) return;
+
+    const requests = followerAliases.map((followerAlias) => ({
+      PutRequest: {
+        Item: {
+          follower_alias: followerAlias,
+          time_stamp: status.timestamp,
+          author_alias: status.user.alias,
+          post: status.post,
+        },
+      },
+    }));
+
+    const params = {
+      RequestItems: {
+        [this.tableName]: requests,
+      },
+    };
+
+    await this.client.send(new BatchWriteCommand(params));
+  }
 
   async addStatusToFeed(status: Status, followerHandle: string): Promise<void> {
     await this.client.send(
@@ -55,7 +86,8 @@ export class FeedDAOAWS implements FeedDAO {
     if (lastItem) {
       exclusiveStartKey = {
         follower_alias: userAlias,
-        time_stamp: lastItem.timestamp || lastItem.time_stamp || lastItem._timestamp
+        time_stamp:
+          lastItem.timestamp || lastItem.time_stamp || lastItem._timestamp,
       };
     }
 

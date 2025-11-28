@@ -90,6 +90,12 @@ export class UserService implements Service {
     userImageBytes: Uint8Array,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
+
+    const existingUser = await this.usersDAO.getUser(alias);
+    if (existingUser) {
+      throw new Error("User with this alias already exists");
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const imageBuffer = Buffer.from(userImageBytes);

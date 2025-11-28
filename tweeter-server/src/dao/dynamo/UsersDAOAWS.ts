@@ -39,6 +39,8 @@ export class UsersDAOAWS implements UsersDAO {
             lastName: user.lastName,
             hashedPassword: user.hashedPassword,
             imageUrl: user.imageUrl ?? null,
+            follower_count: 0,
+            followee_count: 0,
         },
         })
     );

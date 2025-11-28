@@ -12,10 +12,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "tweeter-shared": "file:../tweeter-shared",
-    "date-fns": "^3.3.1",
-    "uuid": "^9.0.1",
+    "@types/bcryptjs": "^2.4.2",
     "bcryptjs": "^2.4.3",
-    "@types/bcryptjs": "^2.4.2"
+    "date-fns": "^3.3.1",
+    "tweeter-shared": "file:../tweeter-shared",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.159"
   }
 }

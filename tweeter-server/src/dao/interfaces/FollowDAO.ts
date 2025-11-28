@@ -1,4 +1,5 @@
 import { FollowPage } from "../../model/types/FollowPage";
+import { FollowRecord } from "../../model/types/FollowRecord";
 
 export interface FollowDAO {
   follow(follower: string, followee: string): Promise<void>;
@@ -7,5 +8,10 @@ export interface FollowDAO {
   getFollowees(handle: string, limit: number, lastKey?: any): Promise<FollowPage>;
   getFollowerCount(handle: string): Promise<number>;
   getFolloweeCount(handle: string): Promise<number>;
+  getFollowersPage(
+    followeeAlias: string,
+    pageSize: number,
+    lastKey?: any
+  ): Promise<[FollowRecord[], boolean, any]>;
 }
 

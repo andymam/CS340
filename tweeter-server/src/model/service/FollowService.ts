@@ -17,6 +17,22 @@ export class FollowService implements Service {
     this.authorizationService = new AuthorizationService(authTokenDAO);
   }
 
+  public async getFollowerAliases(
+    userAlias: string,
+    pageSize: number,
+    lastKey?: any
+  ): Promise<[string[], boolean, any]> {
+    const [followRecords, hasMore, newLastKey] = await this.followDAO.getFollowersPage(
+      userAlias,
+      pageSize,
+      lastKey
+    );
+
+    const followerAliases = followRecords.map(record => record.follower_handle);
+
+    return [followerAliases, hasMore, newLastKey];
+  }
+
   public async loadMoreFollowees(
     token: string,
     userAlias: string,

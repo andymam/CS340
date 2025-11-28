@@ -122,4 +122,9 @@ export class StatusService implements Service {
     );
     console.log("Added to all feeds");
   }
+
+  public async addToStory(token: string, newStatus: Status): Promise<void> {
+    await this.authorizationService.authorize(token);
+    await this.storyDAO.addStatus(newStatus);
+  }
 }

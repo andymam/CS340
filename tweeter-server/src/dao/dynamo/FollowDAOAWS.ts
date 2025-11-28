@@ -1,7 +1,15 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, QueryCommand, UpdateCommand, DeleteCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+  UpdateCommand,
+  DeleteCommand,
+  GetCommand,
+} from "@aws-sdk/lib-dynamodb";
 import { FollowPage } from "../../model/types/FollowPage";
 import { FollowDAO } from "../interfaces/FollowDAO";
+import { FollowRecord } from "../../model/types/FollowRecord";
 
 export class FollowDAOAWS implements FollowDAO {
   private readonly followsTableName = process.env.FOLLOW_TABLE!;
@@ -79,12 +87,11 @@ export class FollowDAOAWS implements FollowDAO {
     limit: number,
     lastKey?: any
   ): Promise<FollowPage> {
-
     let exclusiveStartKey = undefined;
     if (lastKey) {
       exclusiveStartKey = {
         followee_handle: lastKey.followee_handle || handle,
-        follower_handle: lastKey.follower_handle || lastKey.alias
+        follower_handle: lastKey.follower_handle || lastKey.alias,
       };
     }
 
@@ -118,12 +125,11 @@ export class FollowDAOAWS implements FollowDAO {
     limit: number,
     lastKey?: any
   ): Promise<FollowPage> {
-
     let exclusiveStartKey = undefined;
     if (lastKey) {
       exclusiveStartKey = {
         followee_handle: lastKey.followee_handle || handle,
-        follower_handle: lastKey.follower_handle || lastKey.alias
+        follower_handle: lastKey.follower_handle || lastKey.alias,
       };
     }
 
@@ -173,5 +179,39 @@ export class FollowDAOAWS implements FollowDAO {
     );
 
     return result.Item?.followee_count ?? 0;
+  }
+
+  async getFollowersPage(
+    followeeAlias: string,
+    pageSize: number,
+    lastKey?: any
+  ): Promise<[FollowRecord[], boolean, any]> {
+    let exclusiveStartKey = undefined;
+    if (lastKey) {
+      exclusiveStartKey = {
+        followee_handle: lastKey.followee_handle || followeeAlias,
+        follower_handle: lastKey.follower_handle || lastKey.alias,
+      };
+    }
+
+    const result = await this.client.send(
+      new QueryCommand({
+        TableName: this.followsTableName,
+        IndexName: "follow_index",
+        KeyConditionExpression: "followee_handle = :handle",
+        ExpressionAttributeValues: {
+          ":handle": followeeAlias,
+        },
+        Limit: pageSize,
+        ExclusiveStartKey: exclusiveStartKey,
+      })
+    );
+
+    const records = (result.Items ?? []).map((item) => ({
+      follower_handle: item.follower_handle,
+      followee_handle: item.followee_handle,
+    }));
+
+    return [records, !!result.LastEvaluatedKey, result.LastEvaluatedKey];
   }
 }

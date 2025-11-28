@@ -8,3 +8,7 @@ const daoFactory = new DynamoDAOFactory();
 export const userService = new UserService(daoFactory);
 export const followService = new FollowService(daoFactory);
 export const statusService = new StatusService(daoFactory);
+
+export const feedDAO = daoFactory.getFeedDAO();
+export const storyDAO = daoFactory.getStoryDAO();
+export const followDAO = daoFactory.getFollowDAO();

@@ -10,4 +10,5 @@ export interface FeedDAO {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[StatusRecord[], boolean, any]>;
+  batchAddToFeeds(status: Status, followerAliases: string[]): Promise<void>;
 }

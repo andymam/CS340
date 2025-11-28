@@ -39,6 +39,18 @@ Metadata:
 #
 Resources:
 
+  PostQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: PostQueue
+      VisibilityTimeout: 300
+
+  JobQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: JobQueue
+      VisibilityTimeout: 300
+
   TweeterBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -579,6 +591,7 @@ Resources:
           FOLLOW_TABLE: !Ref followTable
           STORY_TABLE: !Ref storyTable
           FEED_TABLE: !Ref feedTable
+          POST_QUEUE_URL: !Ref PostQueue
       Events:
         PostApi:
           Type: Api
@@ -628,6 +641,49 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /login
             Method: POST
+
+  postQueueProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: postQueueProcessorFunction
+      Handler: lambda/queue/PostQueueProcessorLambda.handler
+      Policies: *commonPolicies
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
+          JOB_QUEUE_URL: !Ref JobQueue
+      Events:
+        SQSTrigger:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt PostQueue.Arn
+            BatchSize: 1
+            Enabled: true
+
+  jobQueueProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: jobQueueProcessorFunction
+      Handler: lambda/queue/JobQueueProcessorLambda.handler
+      Policies: *commonPolicies
+      Environment:
+        Variables:
+          USERS_TABLE: !Ref usersTable
+          AUTH_TOKENS_TABLE: !Ref authtokensTable
+          FOLLOW_TABLE: !Ref followTable
+          STORY_TABLE: !Ref storyTable
+          FEED_TABLE: !Ref feedTable
+      Events:
+        SQSTrigger:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt JobQueue.Arn
+            BatchSize: 10
+            Enabled: true
 
   #
   # SQS Queue Lambda Functions
