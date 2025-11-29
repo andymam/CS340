@@ -33,6 +33,14 @@
   "jest": {
     "verbose": true,
     "testEnvironment": "jsdom",
+    "preset": "ts-jest",
+    "globals": {
+      "ts-jest": {
+        "tsconfig": {
+          "jsx": "react"
+        }
+      }
+    },
     "moduleNameMapper": {
       "\\.(css|less)$": "<rootDir>/test/__mocks__/styleMock.js"
     },

@@ -10,7 +10,7 @@ export const handler = async (event: SQSEvent) => {
   for (const record of event.Records) {
     const { status, posterAlias } = JSON.parse(record.body);
     
-    console.log(`Processing post from ${posterAlias}`);
+    // console.log(`Processing post from ${posterAlias}`);
     
     const allFollowers: string[] = [];
     let hasMore = true;
@@ -27,7 +27,7 @@ export const handler = async (event: SQSEvent) => {
       lastKey = nextKey;
     }
     
-    console.log(`Found ${allFollowers.length} followers`);
+    // console.log(`Found ${allFollowers.length} followers`);
     
     const batches = chunkArray(allFollowers, 25);
     
@@ -43,7 +43,7 @@ export const handler = async (event: SQSEvent) => {
       }));
     }
     
-    console.log(`Sent ${batches.length} batches to JobQueue`);
+    // console.log(`Sent ${batches.length} batches to JobQueue`);
   }
 };
 
